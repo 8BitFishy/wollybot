@@ -1,4 +1,4 @@
-#from gpiozero import LED
+from gpiozero import LED
 import os
 import subprocess
 import sys
