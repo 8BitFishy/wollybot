@@ -108,6 +108,11 @@ def handle(msg, Octavius_Receiver):
             hold(duration, Octavius_Receiver)
         except NameError:
             Octavius_Receiver.send_message("LED package not recognised, are you sure this is a pi?")
+    else:
+        print()
+        print("Command not recognised")
+        Octavius_Receiver.send_message("Command not recognised")
+    
     '''
     elif action == "UPDATE":
         print()
@@ -122,7 +127,4 @@ def handle(msg, Octavius_Receiver):
         except Exception as e:
             print(e)
     '''
-    else:
-        print()
-        print("Command not recognised")
-        Octavius_Receiver.send_message("Command not recognised")
+
