@@ -3,9 +3,7 @@ import requests
 import urllib
 from time import time
 
-
 filename = 'telegramID.txt'
-
 
 with open(filename) as f:
     IDS = f.read().splitlines()
