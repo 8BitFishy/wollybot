@@ -1,8 +1,6 @@
 import Telegram_Manager
 import Command_Centre
 from time import sleep
-import atexit
-import os
 
 
 def receiver_loop(Octavius_Receiver):
