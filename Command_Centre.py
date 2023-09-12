@@ -1,12 +1,9 @@
 #from gpiozero import LED
 import os
-import shutil
 import subprocess
 import sys
 from time import sleep
-#led = LED(17)
-from os import execv
-from pygit2 import clone_repository
+led = LED(17)
 
 
 def on():
@@ -32,7 +29,7 @@ def hold(duration, Octavius_Receiver):
     print("Released")
     return
 
-
+'''
 def Self_Update():
     os.chdir("..")
     updater_filepath = os.path.abspath(os.curdir) + "\\Updater.py"
@@ -70,6 +67,7 @@ def Self_Update():
 def Restart():
     return
 
+'''
 
 def handle(msg, Octavius_Receiver):
     duration = 0
@@ -110,7 +108,7 @@ def handle(msg, Octavius_Receiver):
             hold(duration, Octavius_Receiver)
         except NameError:
             Octavius_Receiver.send_message("LED package not recognised, are you sure this is a pi?")
-
+    '''
     elif action == "UPDATE":
         print()
         try:
@@ -123,7 +121,7 @@ def handle(msg, Octavius_Receiver):
                 pass
         except Exception as e:
             print(e)
-
+    '''
     else:
         print()
         print("Command not recognised")
