@@ -35,10 +35,10 @@ def Self_Update():
     updater_filepath = os.path.abspath(os.curdir) + "\\Updater.py"
     print("Running updater")
     update_file_dir = "Update_Files"
-    '''
+    
     with open(updater_filepath) as f:
         exec(f.read())
-    '''
+    
     if os.path.exists(update_file_dir):
         shutil.rmtree(update_file_dir)
 
