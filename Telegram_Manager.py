@@ -2,6 +2,7 @@ import json
 import requests
 import urllib
 from time import time
+import datetime
 
 filename = 'telegramID.txt'
 
@@ -16,6 +17,7 @@ class Message_Receiver:
     def __init__(self, text, last_update_id):
         self.text = text
         self.last_update_id = last_update_id
+        self.log = "log.txt"
 
     
     def get_url(self, url):
@@ -49,8 +51,9 @@ class Message_Receiver:
         return (text, chat_id)
     
     def send_message(self, text):
-        text = text.capitalize()
+        #text = text.capitalize()
         text = urllib.parse.quote_plus(text)
+        self.printlog(text)
         url = URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
         self.get_url(url)
     
@@ -66,10 +69,10 @@ class Message_Receiver:
             time_since_message = updates["result"][0]["message"]["date"] - date_time
 
             if abs(time_since_message) < 20 and self.last_update_id is not None:
-                print("Update found")
-                print("Update ID = {}".format(self.last_update_id))
+                self.printlog("Update found")
+                self.printlog("Update ID = {}".format(self.last_update_id))
                 self.text = updates["result"][0]["message"]["text"]
-                print("Received update = {}".format(updates["result"][0]["message"]["text"]))
+                self.printlog("Received update = {}".format(updates["result"][0]["message"]["text"]))
                 self.last_update_id = self.get_last_update_id(updates) + 1
 
 
@@ -96,7 +99,10 @@ class Message_Receiver:
         else:
             return False
 
-
+    def printlog(text):
+        f = open(self.log, "a")
+            f.write((str(datetime.datetime.now()).split(".", 1)[0]) + (" - ") + str(text))
+            f.close()
 
 
 
