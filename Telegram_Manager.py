@@ -99,10 +99,10 @@ class Message_Receiver:
         else:
             return False
 
-    def printlog(text):
+    def printlog(self, text):
         f = open(self.log, "a")
-            f.write((str(datetime.datetime.now()).split(".", 1)[0]) + (" - ") + str(text))
-            f.close()
+        f.write((str(datetime.datetime.now()).split(".", 1)[0]) + (" - ") + str(text))
+        f.close()
 
 
 
