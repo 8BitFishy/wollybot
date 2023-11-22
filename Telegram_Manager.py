@@ -100,9 +100,9 @@ class Message_Receiver:
             return False
 
     def printlog(self, text):
-        f = open(self.log, "a")
-        f.write((str(datetime.datetime.now()).split(".", 1)[0]) + (" - ") + str(text))
-        f.close()
+        logfile = open(self.log, "a")
+        logfile.write((str(datetime.datetime.now()).split(".", 1)[0]) + (" - ") + str(text))
+        logfile.close()
 
 
 
