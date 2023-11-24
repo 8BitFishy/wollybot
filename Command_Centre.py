@@ -1,70 +1,35 @@
-#from gpiozero import LED
+from gpiozero import LED
 import os
 import shutil
 import subprocess
 import sys
-from time import sleep
-#led = LED(17)
+from time import sleep, ctime
+led = LED(17)
 from os import execv
-from pygit2 import clone_repository
+#from pygit2 import clone_repository
 
 
 def on():
     led.on()
     sleep(1)
     led.off()
-    print("Turning computer on")
+    print(ctime() + " - Action - Turning computer on")
     return
 
 def off():
     led.off()
-    print("Turning computer off")
+    print(ctime() + " - Action - Turning computer off")
     return
 
 def hold(duration, Octavius_Receiver):
     Octavius_Receiver.send_message("Holding...")
     led.on()
-    print("Pressed")
+    print(ctime() + " - Action - Pressed")
     sleep(duration)
     led.off()
     Octavius_Receiver.send_message("...Released")
-
-    print("Released")
+    print(ctime() + " - Action - Released")
     return
-
-
-def Self_Update():
-    os.chdir("..")
-    updater_filepath = os.path.abspath(os.curdir) + "\\Updater.py"
-    print("Running updater")
-    update_file_dir = "Update_Files"
-    '''
-    with open(updater_filepath) as f:
-        exec(f.read())
-    '''
-    if os.path.exists(update_file_dir):
-        shutil.rmtree(update_file_dir)
-
-    #    os.remove(update_file_dir)
-
-    clone_repository("https://github.com/8BitFishy/wollybot", update_file_dir,
-                     bare=False, repository=None, remote=None, checkout_branch=None, callbacks=None)
-
-    import sys, subprocess
-    subprocess.run(["python", updater_filepath])
-    subprocess.Popen("python -c \"import os, time; time.sleep(1); os.remove('{}');\"".format(sys.argv[0]))
-    sys.exit(0)
-
-
-    #exit()
-    #os.chdir("..")
-    #updater_filepath = os.path.abspath(os.curdir) + "\\Updater.py"
-    #subprocess.Popen(f'python3 {updater_filepath}')
-
-    #r = requests.get('https://raw.githubusercontent.com/8BitFishy/wollybot/wolly_bot2.py')
-    #print(r)
-
-
 
 
 def Restart():
@@ -73,18 +38,12 @@ def Restart():
 
 def handle(msg, Octavius_Receiver):
     duration = 0
-    print(msg)
-    #rawcommand = msg['text']
-    #capcommand = msg.upper()
+    #print(ctime() + f"Message Received - {msg}")
 
     command = msg.split()
     action = command[0]
 
-    print('Got command: %s' % command)
-    print("{}".format(action), end="")
-
     if action == 'ON':
-        print()
         try:
             on()
             Octavius_Receiver.send_message("Turning computer on")
@@ -92,7 +51,6 @@ def handle(msg, Octavius_Receiver):
             Octavius_Receiver.send_message("LED package not recognised, are you sure this is a pi?")
 
     elif action == 'OFF':
-        print()
         try:
             off()
             Octavius_Receiver.send_message("Turning computer off")
@@ -100,31 +58,28 @@ def handle(msg, Octavius_Receiver):
             Octavius_Receiver.send_message("LED package not recognised, are you sure this is a pi?")
 
     elif action == 'TALK':
-        print()
         Octavius_Receiver.send_message("Hello, what can I do for you?")
 
     elif action == "HOLD":
         try:
             duration = int(command[1])
-            print(" {}".format(duration))
             hold(duration, Octavius_Receiver)
         except NameError:
             Octavius_Receiver.send_message("LED package not recognised, are you sure this is a pi?")
 
-    elif action == "UPDATE":
-        print()
+    elif action == "LOG":
+        Octavius_Receiver.send_message("Sending logs")
+        print(ctime() + " - Action - Send Logs")
         try:
-            Octavius_Receiver.send_message("Are you sure you want to update? Yes / No")
-            response = Octavius_Receiver.get_response()
-            if response == "YES":
-                print("Running self update")
-                Self_Update()
-            else:
-                pass
-        except Exception as e:
-            print(e)
+            f = open("cron_log.txt")
+            for line in f:
+                Octavius_Receiver.send_message(str(line))
+            f.close()
+        except Exception as E:
+            Octavius_Receiver.send_message("Action failed")
+            print(ctime() + " - failed with exception:")
+            print(E)
 
     else:
-        print()
-        print("Command not recognised")
+        print(ctime() + " - No action - Command not recognised")
         Octavius_Receiver.send_message("Command not recognised")

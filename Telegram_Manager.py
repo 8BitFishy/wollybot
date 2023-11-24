@@ -1,8 +1,7 @@
 import json
 import requests
 import urllib
-from time import time
-import datetime
+from time import time, ctime
 
 filename = 'telegramID.txt'
 
@@ -14,10 +13,9 @@ TOKEN = str(IDS[1])
 URL = "https://api.telegram.org/bot{}/".format(TOKEN)
 
 class Message_Receiver:
-    def __init__(self, text, last_update_id):
+    def __init__(self, text):
         self.text = text
-        self.last_update_id = last_update_id
-        self.log = "log.txt"
+        self.last_update_id = None
 
     
     def get_url(self, url):
@@ -52,32 +50,33 @@ class Message_Receiver:
     
     def send_message(self, text):
         #text = text.capitalize()
+        print(ctime() + " - Sending Message - " + text)
         text = urllib.parse.quote_plus(text)
-        self.printlog(text)
         url = URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
         self.get_url(url)
     
     def get_response(self):
 
-        print("Entering get response")
+        #print("Entering get response")
         updates = self.get_updates(self.last_update_id)
-        print(f"Update ID = {self.last_update_id}")
-        print(updates)
+        #print(f"Update ID = {self.last_update_id}")
 
         if len(updates["result"]) > 0:
+            self.last_update_id = int(updates["result"][0]["update_id"])
+
+            print(ctime() + " - Received Update: ")
+            print(updates)
+
             date_time = int(str(time()).split(".")[0])
             time_since_message = updates["result"][0]["message"]["date"] - date_time
 
             if abs(time_since_message) < 20 and self.last_update_id is not None:
-                self.printlog("Update found")
-                self.printlog("Update ID = {}".format(self.last_update_id))
                 self.text = updates["result"][0]["message"]["text"]
-                self.printlog("Received update = {}".format(updates["result"][0]["message"]["text"]))
+                print(ctime() + ' - Received Message - "' + self.text + '"')
                 self.last_update_id = self.get_last_update_id(updates) + 1
 
-
             else:
-                print("Message timeout")
+                print(ctime() + " - Message timeout")
                 self.text=''
                 self.last_update_id = self.get_last_update_id(updates) + 1
 
@@ -86,26 +85,10 @@ class Message_Receiver:
             self.text = ''
 
         self.text = self.text.upper()
-        print("Leaving get response with text: {}".format(self.text))
+        #print("Leaving get response with text: {}".format(self.text))
         return self.text
-    
-    
-    def get_confirmation(self, Octavius_Vocab):
-    
-        response = self.get_response()
-
-        if response in Octavius_Vocab.affirmativelist:
-            return True
-        else:
-            return False
-
-    def printlog(self, text):
-        logfile = open(self.log, "a")
-        logfile.write((str(datetime.datetime.now()).split(".", 1)[0]) + (" - ") + str(text))
-        logfile.close()
-
 
 
 def generate_receiver():
-    Octavius_Receiver = Message_Receiver("", None)
+    Octavius_Receiver = Message_Receiver("")
     return Octavius_Receiver
