@@ -27,7 +27,6 @@ if __name__ == '__main__':
 
     try:
         Octavius_Receiver = Telegram_Manager.generate_receiver()
-        Octavius_Receiver.send_message("I am online...")
 
 
     except Exception as E:
@@ -40,13 +39,13 @@ if __name__ == '__main__':
             sleep(10)
             try:
                 Octavius_Receiver = Telegram_Manager.generate_receiver()
-                Octavius_Receiver.send_message("I am online...")
 
             except Exception as E:
                 print(ctime() + " - Error Initialising - ")
                 print(str(E))
                 print(ctime() + " - Retrying in 10 seconds")
 
+    Octavius_Receiver.send_message("I am online...")
 
     receiver_loop(Octavius_Receiver)
 
