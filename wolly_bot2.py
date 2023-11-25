@@ -6,8 +6,6 @@ import atexit
 
 def receiver_loop(Octavius_Receiver):
 
-    Octavius_Receiver.send_message("I am online...")
-
     while True:
         text = Octavius_Receiver.get_response()
         if text != "":
@@ -29,6 +27,8 @@ if __name__ == '__main__':
 
     try:
         Octavius_Receiver = Telegram_Manager.generate_receiver()
+        Octavius_Receiver.send_message("I am online...")
+
 
     except Exception as E:
         print(ctime() + " - Error Initialising - ")
@@ -40,6 +40,8 @@ if __name__ == '__main__':
             sleep(10)
             try:
                 Octavius_Receiver = Telegram_Manager.generate_receiver()
+                Octavius_Receiver.send_message("I am online...")
+
             except Exception as E:
                 print(ctime() + " - Error Initialising - ")
                 print(str(E))
