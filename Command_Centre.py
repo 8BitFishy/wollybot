@@ -3,6 +3,8 @@ from os import listdir
 from os.path import isfile, join
 #from gpiozero import LED
 #led = LED(17)
+directory = 'wollybot/'
+
 
 def on():
     led.on()
@@ -78,7 +80,7 @@ def handle(msg, Octavius_Receiver):
         Octavius_Receiver.send_message(f"Accessing {filename}")
 
         try:
-            f = open(filename)
+            f = open(f'{directory}{filename}')
             if len(command) == 3:
                 for line in (f.readlines()[-int(command[2]):]):
                     Octavius_Receiver.send_message(str(line))
