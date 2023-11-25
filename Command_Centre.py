@@ -80,8 +80,9 @@ def handle(msg, Octavius_Receiver):
         try:
             f = open(filename)
             if len(command) == 3:
-                Octavius_Receiver.send_message(str(f.read()))
-                #todo add read n lines from end function here
+                for line in (f.readlines()[-int(command[2]):]):
+                    Octavius_Receiver.send_message(str(line))
+
             else:
                 Octavius_Receiver.send_message(str(f.read()))
             f.close()
