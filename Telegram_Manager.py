@@ -1,7 +1,7 @@
 import json
 import requests
 import urllib
-from time import time, ctime
+from time import time, ctime, sleep
 
 filename = 'telegramID.txt'
 directory = 'wollybot/'
@@ -87,6 +87,7 @@ class Message_Receiver:
             return self.text
 
         except Exception as e:
+
             print("Caught exception")
             try:
                 print(updates)
@@ -94,11 +95,13 @@ class Message_Receiver:
                 if str(updates["error_code"]) == str(409):
                     print("Is 409 error")
                     exit()
+                    quit()
             except:
                 pass
             print(f"{ctime()} - Error reaching URL, cannot get updates")
             print(e)
             self.text = ''
+            sleep(5)
             return self.text
 
 def generate_receiver():

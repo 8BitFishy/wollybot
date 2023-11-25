@@ -21,7 +21,9 @@ if __name__ == '__main__':
 
     atexit.register(exiting)
 
-    print(ctime() + " - Starting")
+    sleep(30)
+
+    print(ctime() + " - Initialising")
 
     previousmessage = ''
 
@@ -45,7 +47,18 @@ if __name__ == '__main__':
                 print(str(E))
                 print(ctime() + " - Retrying in 10 seconds")
 
-    Octavius_Receiver.send_message("I am online...")
+    print(ctime() + " - Connecting to URL")
+    try:
+        Octavius_Receiver.send_message("I am online...")
+
+    except Exception as E:
+        print(ctime() + " - Re-trying…")
+        while failed is True:
+            try:
+                Octavius_Receiver.send_message("I am online...")
+                failed = False
+            except:
+                sleep(5)
 
     receiver_loop(Octavius_Receiver)
 
