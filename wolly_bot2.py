@@ -2,10 +2,10 @@ import Telegram_Manager
 import Command_Centre
 from time import sleep, ctime
 import atexit
-import os
 
 
 def receiver_loop(Octavius_Receiver):
+
     Octavius_Receiver.send_message("I am online...")
 
     while True:
@@ -19,6 +19,7 @@ def exiting():
     print(ctime() + " - Exiting")
 
 if __name__ == '__main__':
+
     atexit.register(exiting)
 
     print(ctime() + " - Starting")
@@ -29,7 +30,8 @@ if __name__ == '__main__':
         Octavius_Receiver = Telegram_Manager.generate_receiver()
 
     except Exception as E:
-        print(ctime() + " - Error - " + str(E))
+        print(ctime() + " - Error Initialising - ")
+        print(str(E))
         print(ctime() + " - Retrying in 10 seconds")
 
         Octavius_Receiver = None
@@ -38,7 +40,8 @@ if __name__ == '__main__':
             try:
                 Octavius_Receiver = Telegram_Manager.generate_receiver()
             except Exception as E:
-                print(ctime() + " - Error - " + str(E))
+                print(ctime() + " - Error Initialising - ")
+                print(str(E))
                 print(ctime() + " - Retrying in 10 seconds")
 
 

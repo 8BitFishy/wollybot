@@ -1,34 +1,21 @@
-from gpiozero import LED
-import os
-import shutil
-import subprocess
-import sys
 from time import sleep, ctime
-led = LED(17)
-from os import execv
-#from pygit2 import clone_repository
-
+from os import listdir
+from os.path import isfile, join
+#from gpiozero import LED
+#led = LED(17)
 
 def on():
     led.on()
-    sleep(1)
-    led.off()
-    print(ctime() + " - Action - Turning computer on")
     return
 
 def off():
     led.off()
-    print(ctime() + " - Action - Turning computer off")
     return
 
-def hold(duration, Octavius_Receiver):
-    Octavius_Receiver.send_message("Holding...")
-    led.on()
-    print(ctime() + " - Action - Pressed")
+def hold(duration):
+    on()
     sleep(duration)
-    led.off()
-    Octavius_Receiver.send_message("...Released")
-    print(ctime() + " - Action - Released")
+    off()
     return
 
 
@@ -37,48 +24,91 @@ def Restart():
 
 
 def handle(msg, Octavius_Receiver):
-    duration = 0
-    #print(ctime() + f"Message Received - {msg}")
 
     command = msg.split()
-    action = command[0]
+    action = command[0].upper()
 
-    if action == 'ON':
-        try:
-            on()
-            Octavius_Receiver.send_message("Turning computer on")
-        except NameError:
-            Octavius_Receiver.send_message("LED package not recognised, are you sure this is a pi?")
+    if action == "HELLO":
+        Octavius_Receiver.send_message("Hello, what can I do for you?")
 
-    elif action == 'OFF':
+    elif action == 'ON' or action == "OFF":
+
         try:
-            off()
-            Octavius_Receiver.send_message("Turning computer off")
-        except NameError:
-            Octavius_Receiver.send_message("LED package not recognised, are you sure this is a pi?")
+            if action == "ON":
+                modifier = "on"
+            else:
+                modifier = "off"
+
+            Octavius_Receiver.send_message("Turning computer " + modifier)
+            print(ctime() + " - Action - Turning computer " + modifier)
+            hold(1)
+
+        except Exception as E:
+            Octavius_Receiver.send_message("Action failed - " + E.__class__.__name__)
+            print(ctime() + ctime() + " - failed with exception:")
+            print(E)
 
     elif action == 'TALK':
-        Octavius_Receiver.send_message("Hello, what can I do for you?")
+        Octavius_Receiver.send_message("I am active. My current commands are: ")
+        Octavius_Receiver.send_message("On")
+        Octavius_Receiver.send_message("Off")
+        Octavius_Receiver.send_message("Hold")
+        Octavius_Receiver.send_message("Talk")
+        Octavius_Receiver.send_message("Print files")
+        Octavius_Receiver.send_message("Print (filename)")
+
 
     elif action == "HOLD":
         try:
             duration = int(command[1])
-            hold(duration, Octavius_Receiver)
-        except NameError:
-            Octavius_Receiver.send_message("LED package not recognised, are you sure this is a pi?")
+            Octavius_Receiver.send_message(f"Holding button for {duration} seconds")
+            print(ctime() + " - Action - Hold " + str(duration))
+            hold(duration)
 
-    elif action == "LOG":
-        Octavius_Receiver.send_message("Sending logs")
-        print(ctime() + " - Action - Send Logs")
-        try:
-            f = open("cron_log.txt")
-            for line in f:
-                Octavius_Receiver.send_message(str(line))
-            f.close()
         except Exception as E:
-            Octavius_Receiver.send_message("Action failed")
+            Octavius_Receiver.send_message("Action failed - " + E.__class__.__name__)
             print(ctime() + " - failed with exception:")
             print(E)
+
+
+    elif action == "PRINT" and command[1] != "files":
+
+        filename = str(command[1])
+        print(ctime() + " - Action - Sending file: " + filename)
+        Octavius_Receiver.send_message(f"Accessing {filename}")
+
+        try:
+            f = open(filename)
+            if len(command) == 3:
+                Octavius_Receiver.send_message(str(f.read()))
+                #todo add read n lines from end function here
+            else:
+                Octavius_Receiver.send_message(str(f.read()))
+            f.close()
+
+        except Exception as E:
+            Octavius_Receiver.send_message("Action failed - " + E.__class__.__name__)
+            print(ctime() + " - failed with exception:")
+            print(E)
+
+    elif action == "PRINT" and command[1] == "files":
+
+        print(ctime() + " - Action - Read file names")
+
+        try:
+            current_directory = __file__.strip("Command_Centre.py").strip(":")
+            print(ctime() + " - Searching directory: \n" + current_directory)
+            Octavius_Receiver.send_message("Files found:")
+
+            for f in listdir(current_directory):
+                if isfile(join(current_directory, f)):
+                    Octavius_Receiver.send_message(f)
+
+        except Exception as E:
+            Octavius_Receiver.send_message("Action failed - " + E.__class__.__name__)
+            print(ctime() + " - failed with exception:")
+            print(E)
+
 
     else:
         print(ctime() + " - No action - Command not recognised")
