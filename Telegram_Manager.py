@@ -5,6 +5,7 @@ from time import time, ctime
 
 filename = 'telegramID.txt'
 directory = 'wollybot/'
+directory = __file__.strip("Telegram_Manager.py").strip(":")
 
 with open(f'{directory}{filename}') as f:
     IDS = f.read().splitlines()
@@ -43,10 +44,11 @@ class Message_Receiver:
         return max(update_ids)
 
     def send_message(self, text):
-        print(ctime() + " - Sending Message - " + text)
-        text = urllib.parse.quote_plus(text)
-        url = URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
+
         try:
+            print(ctime() + " - Sending Message - " + text)
+            text = urllib.parse.quote_plus(text)
+            url = URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
             self.get_url(url)
 
         except Exception as e:
@@ -56,32 +58,29 @@ class Message_Receiver:
 
     
     def get_response(self):
-
+        self.text = ""
         try:
             updates = self.get_updates(self.last_update_id)
 
-            if len(updates["result"]) > 0:
+            if len(updates["result"]) is not None:
 
-                self.last_update_id = int(updates["result"][0]["update_id"])
+                if len(updates["result"]) > 0:
 
-                print(ctime() + " - Received Update: ")
-                print(updates)
+                    self.last_update_id = int(updates["result"][0]["update_id"])
 
-                date_time = int(str(time()).split(".")[0])
+                    print(ctime() + " - Received Update: ")
+                    print(updates)
 
-                time_since_message = updates["result"][0]["message"]["date"] - date_time
+                    date_time = int(str(time()).split(".")[0])
+                    time_since_message = updates["result"][0]["message"]["date"] - date_time
+                    self.last_update_id = self.get_last_update_id(updates) + 1
 
-                self.text = updates["result"][0]["message"]["text"]
-                print(ctime() + ' - Update Text - "' + self.text + '"')
-                self.last_update_id = self.get_last_update_id(updates) + 1
+                    if abs(time_since_message) < 20:
+                        self.text = updates["result"][0]["message"]["text"]
+                        print(ctime() + ' - Update Text - "' + self.text + '"')
 
-                if abs(time_since_message) > 20:
-                    print(ctime() + " - Message timed out")
-                    self.text=''
-
-
-            else:
-                self.text = ''
+                    else:
+                        print(ctime() + " - Message timed out")
 
             return self.text
 
