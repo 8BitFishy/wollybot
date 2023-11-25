@@ -88,12 +88,14 @@ class Message_Receiver:
 
         except Exception as e:
             print("Caught exception")
-            print(updates)
-            print(updates["error_code"])
-            if str(updates["error_code"]) == str(409):
-                print("Is 409 error")
-                exit()
-                
+            try:
+                print(updates)
+                print(updates["error_code"])
+                if str(updates["error_code"]) == str(409):
+                    print("Is 409 error")
+                    exit()
+            except:
+                pass
             print(f"{ctime()} - Error reaching URL, cannot get updates")
             print(e)
             self.text = ''
