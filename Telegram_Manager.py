@@ -61,7 +61,9 @@ class Message_Receiver:
         self.text = ""
         try:
             updates = self.get_updates(self.last_update_id)
-
+            print("Checking for updates")
+            print(updates)
+            print(updates["result"])
             if len(updates["result"]) is not None:
 
                 if len(updates["result"]) > 0:
