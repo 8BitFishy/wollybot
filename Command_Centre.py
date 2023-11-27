@@ -1,11 +1,31 @@
 from time import sleep, ctime
-from os import listdir
+from os import listdir, system, remove
 from os.path import isfile, join
-#from gpiozero import LED
-#led = LED(17)
-directory = 'wollybot/'
-directory = __file__.strip("Command_Centre.py").strip(":")
+from gpiozero import LED
 
+led = LED(17)
+
+directory = __file__.strip("Command_Centre.py").strip(":")
+protected_files = ['Command_Centre.py', 'Telegram_Manager.py', 'wollybot.py', 'telegramID.py']
+
+def handle_error(E, Octavius_Receiver):
+    Octavius_Receiver.send_message("Action failed - " + E.__class__.__name__)
+    print(ctime() + " - failed with exception:")
+    print(E)
+    return
+
+def talk(Octavius_Receiver):
+    Octavius_Receiver.send_message("I am active. My current commands are: ")
+    Octavius_Receiver.send_message("On")
+    Octavius_Receiver.send_message("Off")
+    Octavius_Receiver.send_message("Hold")
+    Octavius_Receiver.send_message("Talk")
+    Octavius_Receiver.send_message("Reboot")
+    Octavius_Receiver.send_message("Print files")
+    Octavius_Receiver.send_message("Print (filename)")
+    Octavius_Receiver.send_message("Length (filename)")
+    Octavius_Receiver.send_message("Delete (filename)")
+    return
 
 def on():
     led.on()
@@ -21,8 +41,12 @@ def hold(duration):
     off()
     return
 
+def reboot():
+    system("shutdown /s /t l")
+    return
 
-def Restart():
+def delete(filename):
+    remove(filename)
     return
 
 
@@ -47,19 +71,10 @@ def handle(msg, Octavius_Receiver):
             hold(1)
 
         except Exception as E:
-            Octavius_Receiver.send_message("Action failed - " + E.__class__.__name__)
-            print(ctime() + ctime() + " - failed with exception:")
-            print(E)
+            handle_error(E, Octavius_Receiver)
 
     elif action == 'TALK':
-        Octavius_Receiver.send_message("I am active. My current commands are: ")
-        Octavius_Receiver.send_message("On")
-        Octavius_Receiver.send_message("Off")
-        Octavius_Receiver.send_message("Hold")
-        Octavius_Receiver.send_message("Talk")
-        Octavius_Receiver.send_message("Print files")
-        Octavius_Receiver.send_message("Print (filename)")
-
+        talk(Octavius_Receiver)
 
     elif action == "HOLD":
         try:
@@ -69,9 +84,7 @@ def handle(msg, Octavius_Receiver):
             hold(duration)
 
         except Exception as E:
-            Octavius_Receiver.send_message("Action failed - " + E.__class__.__name__)
-            print(ctime() + " - failed with exception:")
-            print(E)
+            handle_error(E, Octavius_Receiver)
 
 
     elif action == "PRINT" and command[1] != "files":
@@ -91,9 +104,8 @@ def handle(msg, Octavius_Receiver):
             f.close()
 
         except Exception as E:
-            Octavius_Receiver.send_message("Action failed - " + E.__class__.__name__)
-            print(ctime() + " - failed with exception:")
-            print(E)
+            handle_error(E, Octavius_Receiver)
+
 
     elif action == "PRINT" and command[1] == "files":
 
@@ -109,9 +121,50 @@ def handle(msg, Octavius_Receiver):
                     Octavius_Receiver.send_message(f)
 
         except Exception as E:
-            Octavius_Receiver.send_message("Action failed - " + E.__class__.__name__)
-            print(ctime() + " - failed with exception:")
-            print(E)
+            handle_error(E, Octavius_Receiver)
+
+
+    elif action == "REBOOT":
+        print(ctime() + " - Rebooting")
+        Octavius_Receiver.send_message("Rebooting")
+
+        try:
+            reboot()
+
+        except Exception as E:
+            handle_error(E, Octavius_Receiver)
+
+
+    elif action == "DELETE":
+        filename = str(command[1])
+        if filename not in protected_files:
+            print(ctime() + " - Action - Deleting file: " + filename)
+            Octavius_Receiver.send_message(f"Accessing {filename}")
+
+            try:
+                delete(f'{directory}{filename}')
+
+            except Exception as E:
+                handle_error(E, Octavius_Receiver)
+
+        else:
+            Octavius_Receiver.send_message("That file is protected, please don't try to delete this")
+
+
+    elif action == "LENGTH":
+
+        filename = str(command[1])
+        print(ctime() + " - Action - Sending length of file: " + filename)
+        Octavius_Receiver.send_message(f"Reading length of {filename}")
+
+        try:
+            with open(f'{directory}{filename}') as file:
+                count = sum(1 for _ in file)
+                Octavius_Receiver.send_message(f"File is {count} lines long")
+                file.close()
+
+        except Exception as E:
+            handle_error(E, Octavius_Receiver)
 
 
     else:
