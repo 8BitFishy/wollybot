@@ -188,7 +188,7 @@ def handle(msg, Octavius_Receiver):
             update()
             print(ctime() + " - Update Complete")
             Octavius_Receiver.send_message(f"Update complete, rebooting")
-            #reboot()
+            reboot()
 
         except Exception as E:
             handle_error(E, Octavius_Receiver)
