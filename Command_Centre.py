@@ -7,14 +7,14 @@ led = LED(17)
 
 directory = __file__.strip("Command_Centre.py").strip(":")
 protected_files = ['Command_Centre.py', 'Telegram_Manager.py', 'wollybot.py', 'telegramID.txt']
-git_repo = 'https://raw.githubusercontent.com/8BitFishy/wollybot/master/'
+git_repo = 'https://raw.githubusercontent.com/8BitFishy/wollybot/main/'
 
 def update():
     system("rm wollybot/Command_Centre.py")
     system("rm wollybot/Telegram_Manager.py")
     system("rm wollybot/wollybot.py")
-    system(f"wget -P /wollybot {git_repo}Command_Centre.py")
-    system(f"wget -P wollybot {git_repo}Telegram_Manager.py")
+    system(f"wget -P {directory} {git_repo}Command_Centre.py")
+    system(f"wget -P {directory} {git_repo}Telegram_Manager.py")
     system(f"wget -P {directory} {git_repo}wollybot.py")
     return
 
