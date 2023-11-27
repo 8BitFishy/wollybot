@@ -12,9 +12,9 @@ def update():
     system("rm wollybot/Command_Centre.py")
     system("rm wollybot/Telegram_Manager.py")
     system("rm wollybot/wollybot.py")
-    system("wget https://raw.githubusercontent.com/8BitFishy/wollybot/master/Command_Centre.py -p /wollybot")
-    system("wget https://raw.githubusercontent.com/8BitFishy/wollybot/master/Telegram_Manager.py -p /wollybot")
-    system("wget https://raw.githubusercontent.com/8BitFishy/wollybot/master/wollybot.py -p /wollybot")
+    system("wget -p /wollybot https://raw.githubusercontent.com/8BitFishy/wollybot/master/Command_Centre.py")
+    system("wget -p wollybot https://raw.githubusercontent.com/8BitFishy/wollybot/master/Telegram_Manager.py")
+    system("wget -P /wollybot https://raw.githubusercontent.com/8BitFishy/wollybot/master/wollybot.py")
     return
 
 def handle_error(E, Octavius_Receiver):
@@ -187,8 +187,8 @@ def handle(msg, Octavius_Receiver):
             update()
             print(ctime() + " - Update Complete")
             Octavius_Receiver.send_message(f"Update complete, rebooting")
-            reboot()
-            
+            #reboot()
+
         except Exception as E:
             handle_error(E, Octavius_Receiver)
 
