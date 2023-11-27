@@ -18,6 +18,10 @@ def update():
     system(f"wget -P {directory} {git_repo}wollybot.py")
     return
 
+def download(filename):
+    system(f"wget -P {directory} {git_repo}{filename}")
+    return
+
 def handle_error(E, Octavius_Receiver):
     Octavius_Receiver.send_message("Action failed - " + E.__class__.__name__)
     print(ctime() + " - failed with exception:")
@@ -60,7 +64,9 @@ def delete(filename):
     remove(filename)
     return
 
-
+def download(filename):
+    system(f"wget -P {directory} {git_repo}{filename}")
+    return
 
 def handle(msg, Octavius_Receiver):
 
@@ -200,6 +206,18 @@ def handle(msg, Octavius_Receiver):
         except Exception as E:
             handle_error(E, Octavius_Receiver)
 
+    elif action == "DOWNLOAD":
+        filename = str(command[1])
+
+        try:
+            print(ctime() + f" - Action - Download {filename}")
+            Octavius_Receiver.send_message(f"Downloading {filename} from my repo")
+            download(filename)
+            Octavius_Receiver.send_message(f"{filename} downloaded")
+
+        except Exception as E:
+            handle_error(E, Octavius_Receiver)
+            
 
     else:
         print(ctime() + " - No action - Command not recognised")
