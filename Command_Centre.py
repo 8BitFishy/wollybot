@@ -8,6 +8,15 @@ led = LED(17)
 directory = __file__.strip("Command_Centre.py").strip(":")
 protected_files = ['Command_Centre.py', 'Telegram_Manager.py', 'wollybot.py', 'telegramID.py']
 
+def update():
+    system("rm Command_Centre.py")
+    system("rm Telegram_Manager.py")
+    system("rm wollybot.py")
+    system("wget https://raw.githubusercontent.com/8BitFishy/wollybot/master/Command_Centre.py -p wollybot")
+    system("wget https://raw.githubusercontent.com/8BitFishy/wollybot/master/Telegram_Manager.py")
+    system("wget https://raw.githubusercontent.com/8BitFishy/wollybot/master/wollybot.py")
+    return
+
 def handle_error(E, Octavius_Receiver):
     Octavius_Receiver.send_message("Action failed - " + E.__class__.__name__)
     print(ctime() + " - failed with exception:")
@@ -42,12 +51,13 @@ def hold(duration):
     return
 
 def reboot():
-    system("shutdown /s /t l")
+    system("sudo reboot")
     return
 
 def delete(filename):
     remove(filename)
     return
+
 
 
 def handle(msg, Octavius_Receiver):
@@ -90,7 +100,8 @@ def handle(msg, Octavius_Receiver):
     elif action == "PRINT" and command[1] != "files":
 
         filename = str(command[1])
-        print(ctime() + " - Action - Sending file: " + filename)
+        print(ctime() + " - Action - Sending file: ")
+        print(f'{directory}{filename}')
         Octavius_Receiver.send_message(f"Accessing {filename}")
 
         try:
@@ -163,6 +174,16 @@ def handle(msg, Octavius_Receiver):
                 Octavius_Receiver.send_message(f"File is {count} lines long")
                 file.close()
 
+        except Exception as E:
+            handle_error(E, Octavius_Receiver)
+
+
+    elif action == "UPDATE":
+        try:
+            print(ctime() + " - Action - Update")
+            Octavius_Receiver.send_message(f"Updating files")
+            update()
+            
         except Exception as E:
             handle_error(E, Octavius_Receiver)
 

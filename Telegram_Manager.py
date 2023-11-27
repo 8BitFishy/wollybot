@@ -4,7 +4,6 @@ import urllib
 from time import time, ctime, sleep
 
 filename = 'telegramID.txt'
-directory = 'wollybot/'
 directory = __file__.strip("Telegram_Manager.py").strip(":")
 
 with open(f'{directory}{filename}') as f:
@@ -61,9 +60,7 @@ class Message_Receiver:
         self.text = ""
         try:
             updates = self.get_updates(self.last_update_id)
-            print("Checking for updates")
-            print(updates)
-            print(updates["result"])
+
             if len(updates["result"]) is not None:
 
                 if len(updates["result"]) > 0:
@@ -87,15 +84,12 @@ class Message_Receiver:
             return self.text
 
         except Exception as e:
-
             print("Caught exception")
             try:
-                print(updates)
-                print(updates["error_code"])
                 if str(updates["error_code"]) == str(409):
                     print("Is 409 error")
                     exit()
-                    quit()
+
             except:
                 pass
             print(f"{ctime()} - Error reaching URL, cannot get updates")
