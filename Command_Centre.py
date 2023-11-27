@@ -9,12 +9,12 @@ directory = __file__.strip("Command_Centre.py").strip(":")
 protected_files = ['Command_Centre.py', 'Telegram_Manager.py', 'wollybot.py', 'telegramID.py']
 
 def update():
-    system("rm Command_Centre.py")
-    system("rm Telegram_Manager.py")
-    system("rm wollybot.py")
-    system("wget https://raw.githubusercontent.com/8BitFishy/wollybot/master/Command_Centre.py -p wollybot")
-    system("wget https://raw.githubusercontent.com/8BitFishy/wollybot/master/Telegram_Manager.py")
-    system("wget https://raw.githubusercontent.com/8BitFishy/wollybot/master/wollybot.py")
+    system("rm wollybot/Command_Centre.py")
+    system("rm wollybot/Telegram_Manager.py")
+    system("rm wollybot/wollybot.py")
+    system("wget https://raw.githubusercontent.com/8BitFishy/wollybot/master/Command_Centre.py -p /wollybot")
+    system("wget https://raw.githubusercontent.com/8BitFishy/wollybot/master/Telegram_Manager.py -p /wollybot")
+    system("wget https://raw.githubusercontent.com/8BitFishy/wollybot/master/wollybot.py -p /wollybot")
     return
 
 def handle_error(E, Octavius_Receiver):
@@ -30,6 +30,7 @@ def talk(Octavius_Receiver):
     Octavius_Receiver.send_message("Hold")
     Octavius_Receiver.send_message("Talk")
     Octavius_Receiver.send_message("Reboot")
+    Octavius_Receiver.send_message("Update")
     Octavius_Receiver.send_message("Print files")
     Octavius_Receiver.send_message("Print (filename)")
     Octavius_Receiver.send_message("Length (filename)")
@@ -150,10 +151,11 @@ def handle(msg, Octavius_Receiver):
         filename = str(command[1])
         if filename not in protected_files:
             print(ctime() + " - Action - Deleting file: " + filename)
-            Octavius_Receiver.send_message(f"Accessing {filename}")
+            Octavius_Receiver.send_message(f"Deleting {filename}")
 
             try:
                 delete(f'{directory}{filename}')
+                Octavius_Receiver.send_message(f"{filename} deleted")
 
             except Exception as E:
                 handle_error(E, Octavius_Receiver)
@@ -183,7 +185,7 @@ def handle(msg, Octavius_Receiver):
             print(ctime() + " - Action - Update")
             Octavius_Receiver.send_message(f"Updating files")
             update()
-            
+
         except Exception as E:
             handle_error(E, Octavius_Receiver)
 
