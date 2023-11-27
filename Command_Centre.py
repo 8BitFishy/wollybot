@@ -7,7 +7,7 @@ led = LED(17)
 
 directory = __file__.strip("Command_Centre.py").strip(":")
 protected_files = ['Command_Centre.py', 'Telegram_Manager.py', 'wollybot.py', 'telegramID.txt']
-git_repo = 'https://raw.githubusercontent.com/8BitFishy/wollybot/main/'
+git_repo = 'https://raw.githubusercontent.com/8BitFishy/wollybot/deployed/'
 
 def update():
     system("rm wollybot/Command_Centre.py")
