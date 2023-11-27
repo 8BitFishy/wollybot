@@ -102,22 +102,29 @@ def handle(msg, Octavius_Receiver):
     elif action == "PRINT" and command[1] != "files":
 
         filename = str(command[1])
-        print(ctime() + " - Action - Sending file: ")
-        print(f'{directory}{filename}')
-        Octavius_Receiver.send_message(f"Accessing {filename}")
+        with open(f'{directory}{filename}') as file:
+            count = sum(1 for _ in file)
+            file.close()
+        if count > 0:
+            print(ctime() + " - Action - Sending file: ")
+            print(f'{directory}{filename}')
+            Octavius_Receiver.send_message(f"Accessing {filename}")
 
-        try:
-            f = open(f'{directory}{filename}')
-            if len(command) == 3:
-                for line in (f.readlines()[-int(command[2]):]):
-                    Octavius_Receiver.send_message(str(line).strip())
+            try:
+                f = open(f'{directory}{filename}')
+                if len(command) == 3:
+                    for line in (f.readlines()[-int(command[2]):]):
+                        Octavius_Receiver.send_message(str(line).strip())
 
-            else:
-                Octavius_Receiver.send_message(str(f.read()))
-            f.close()
+                else:
+                    Octavius_Receiver.send_message(str(f.read()))
+                f.close()
 
-        except Exception as E:
-            handle_error(E, Octavius_Receiver)
+            except Exception as E:
+                handle_error(E, Octavius_Receiver)
+
+        else:
+            Octavius_Receiver.send_message(f"{filename} is currently empty")
 
 
     elif action == "PRINT" and command[1] == "files":
