@@ -49,11 +49,12 @@ class Message_Receiver:
             text = urllib.parse.quote_plus(text)
             url = URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
             self.get_url(url)
+            return True
 
         except Exception as e:
             print(f"{ctime()} - Error reaching URL, cannot send message")
             print(e)
-
+            return False
 
     
     def get_response(self):
@@ -67,8 +68,8 @@ class Message_Receiver:
 
                     self.last_update_id = int(updates["result"][0]["update_id"])
 
-                    print(ctime() + " - Received Update: ")
-                    print(updates)
+                    print(ctime() + " - Received Update")
+                    #print(updates)
 
                     date_time = int(str(time()).split(".")[0])
                     time_since_message = updates["result"][0]["message"]["date"] - date_time
