@@ -3,6 +3,7 @@ import Command_Centre
 from time import sleep, ctime
 import atexit
 
+print(ctime() + " - Starting Script")
 
 def receiver_loop(Octavius_Receiver):
 
@@ -21,12 +22,12 @@ def exiting():
 
 
 if __name__ == '__main__':
+    print(ctime() + " - Initialising")
 
     atexit.register(exiting)
 
     sleep(30)
 
-    print(ctime() + " - Initialising")
 
     previousmessage = ''
 
@@ -50,7 +51,7 @@ if __name__ == '__main__':
                 print(str(E))
                 print(ctime() + " - Retrying in 10 seconds")
 
-    print(ctime() + " - Connecting to URL")
+    print(ctime() + " - Initialisation Complete, Connecting to URL")
     try:
         Octavius_Receiver.send_message("I am online...")
 

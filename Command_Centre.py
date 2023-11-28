@@ -1,9 +1,14 @@
 from time import sleep, ctime
 from os import listdir, system, remove
 from os.path import isfile, join
-from gpiozero import LED
+try:
+    from gpiozero import LED
+    led = LED(17)
 
-led = LED(17)
+except:
+    print(f'No gpiozero module found')
+
+
 
 directory = __file__.strip("Command_Centre.py").strip(":")
 protected_files = ['Command_Centre.py', 'Telegram_Manager.py', 'wollybot.py', 'telegramID.txt']
@@ -36,6 +41,7 @@ def talk(Octavius_Receiver):
     Octavius_Receiver.send_message("Talk")
     Octavius_Receiver.send_message("Reboot")
     Octavius_Receiver.send_message("Update")
+    Octavius_Receiver.send_message("Download (filename")
     Octavius_Receiver.send_message("Print files")
     Octavius_Receiver.send_message("Print (filename)")
     Octavius_Receiver.send_message("Length (filename)")
@@ -217,7 +223,7 @@ def handle(msg, Octavius_Receiver):
 
         except Exception as E:
             handle_error(E, Octavius_Receiver)
-            
+
 
     else:
         print(ctime() + " - No action - Command not recognised")
