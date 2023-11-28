@@ -12,7 +12,7 @@ def receiver_loop(Octavius_Receiver):
         if text != "":
             Command_Centre.handle(text, Octavius_Receiver)
 
-        sleep(1)
+        sleep(2)
 
 
 
@@ -63,7 +63,7 @@ if __name__ == '__main__':
                 Octavius_Receiver.send_message("I am online...")
                 failed = False
             except:
-                sleep(5)
+                sleep(10)
 
     receiver_loop(Octavius_Receiver)
 

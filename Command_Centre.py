@@ -8,8 +8,6 @@ try:
 except:
     print(f'No gpiozero module found')
 
-
-
 directory = __file__.strip("Command_Centre.py").strip(":")
 protected_files = ['Command_Centre.py', 'Telegram_Manager.py', 'wollybot.py', 'telegramID.txt']
 git_repo = 'https://raw.githubusercontent.com/8BitFishy/wollybot/deployed/'
@@ -129,7 +127,10 @@ def handle(msg, Octavius_Receiver):
                         Octavius_Receiver.send_message(str(line).strip())
 
                 else:
-                    Octavius_Receiver.send_message(str(f.read()))
+                    file_text = ""
+                    for line in f.read():
+                        file_text += (str(line))
+                    Octavius_Receiver.send_message(file_text)
                 f.close()
 
             except Exception as E:
