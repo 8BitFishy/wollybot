@@ -65,6 +65,6 @@ if __name__ == '__main__':
             print(ctime() + " - Re-trying…")
             if attempts > 10:
                 connected = True
-                
+
     receiver_loop(Octavius_Receiver)
 

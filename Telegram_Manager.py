@@ -68,8 +68,8 @@ class Message_Receiver:
 
                     self.last_update_id = int(updates["result"][0]["update_id"])
 
-                    print(ctime() + " - Received Update: ")
-                    print(updates)
+                    print(ctime() + " - Received Update")
+                    #print(updates)
 
                     date_time = int(str(time()).split(".")[0])
                     time_since_message = updates["result"][0]["message"]["date"] - date_time
