@@ -49,11 +49,12 @@ class Message_Receiver:
             text = urllib.parse.quote_plus(text)
             url = URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
             self.get_url(url)
+            return True
 
         except Exception as e:
             print(f"{ctime()} - Error reaching URL, cannot send message")
             print(e)
-
+            return False
 
     
     def get_response(self):

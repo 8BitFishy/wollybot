@@ -52,10 +52,9 @@ if __name__ == '__main__':
                 print(ctime() + " - Retrying in 10 seconds")
 
     print(ctime() + " - Initialisation Complete, Connecting to URL")
-    try:
-        Octavius_Receiver.send_message("I am online...")
 
-    except Exception as E:
+    if not Octavius_Receiver.send_message("I am online..."):
+        
         failed = True
         print(ctime() + " - Re-trying…")
         while failed is True:
