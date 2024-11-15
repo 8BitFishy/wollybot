@@ -42,7 +42,7 @@ def talk(Octavius_Receiver):
     Octavius_Receiver.send_message("Update")
     Octavius_Receiver.send_message("Download [filename]")
     Octavius_Receiver.send_message("Print files")
-    Octavius_Receiver.send_message("Print [filename]")
+    Octavius_Receiver.send_message("Print [filename] [number of lines]")
     Octavius_Receiver.send_message("Length [filename]")
     Octavius_Receiver.send_message("Delete [filename]")
     return
@@ -94,7 +94,6 @@ def handle(msg, Octavius_Receiver):
 
     if action == "HELLO":
         Octavius_Receiver.send_message("Hello, what can I do for you?")
-
 
     elif action == 'ON' or action == "OFF":
 
@@ -250,10 +249,11 @@ def handle(msg, Octavius_Receiver):
             Octavius_Receiver.send_message(f"Suspending action for {duration} minutes")
             print(ctime() + " - Action - suspend " + str(duration) + " minutes")
             suspend(duration)
+            Octavius_Receiver.send_message(f"System back online")
+            print(ctime() + " - System back online after suspension")
 
         except Exception as E:
             handle_error(E, Octavius_Receiver)
-
 
 
     else:
