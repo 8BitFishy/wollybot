@@ -6,7 +6,7 @@ try:
     led = LED(17)
 
 except:
-    print(f'No gpiozero module found')
+    print(ctime() + "No gpiozero module found")
 
 directory = __file__.strip("Command_Centre.py").strip(":")
 protected_files = ['Command_Centre.py', 'Telegram_Manager.py', 'wollybot.py', 'telegramID.txt']
@@ -47,17 +47,27 @@ def talk(Octavius_Receiver):
     return
 
 def on():
-    led.on()
+    try:
+        led.on()
+    except:
+        print(ctime() + "No gpiozero module found")
+
     return
 
 def off():
-    led.off()
+    try:
+        led.off()
+    except:
+        print(ctime() + "No gpiozero module found")
     return
 
 def hold(duration):
-    on()
-    sleep(duration)
-    off()
+    try:
+       on()
+       sleep(duration)
+       off()
+    except:
+        print(ctime() + "No gpiozero module found")
     return
 
 def reboot():
@@ -72,6 +82,10 @@ def download(filename):
     system(f"wget -P {directory} {git_repo}{filename}")
     return
 
+def suspend(duration):
+    sleep(duration * 60)
+    return
+
 def handle(msg, Octavius_Receiver):
 
     command = msg.split()
@@ -79,6 +93,7 @@ def handle(msg, Octavius_Receiver):
 
     if action == "HELLO":
         Octavius_Receiver.send_message("Hello, what can I do for you?")
+
 
     elif action == 'ON' or action == "OFF":
 
@@ -94,6 +109,7 @@ def handle(msg, Octavius_Receiver):
 
         except Exception as E:
             handle_error(E, Octavius_Receiver)
+
 
     elif action == 'TALK':
         talk(Octavius_Receiver)
@@ -213,6 +229,7 @@ def handle(msg, Octavius_Receiver):
         except Exception as E:
             handle_error(E, Octavius_Receiver)
 
+
     elif action == "DOWNLOAD":
         filename = str(command[1])
 
@@ -224,6 +241,18 @@ def handle(msg, Octavius_Receiver):
 
         except Exception as E:
             handle_error(E, Octavius_Receiver)
+
+
+    elif action == "SUSPEND":
+        try:
+            duration = int(command[1])
+            Octavius_Receiver.send_message(f"Suspending action for {duration} minutes")
+            print(ctime() + " - Action - suspend " + str(duration) + " minutes")
+            suspend(duration)
+
+        except Exception as E:
+            handle_error(E, Octavius_Receiver)
+
 
 
     else:
