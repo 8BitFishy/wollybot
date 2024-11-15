@@ -35,15 +35,16 @@ def talk(Octavius_Receiver):
     Octavius_Receiver.send_message("I am active. My current commands are: ")
     Octavius_Receiver.send_message("On")
     Octavius_Receiver.send_message("Off")
-    Octavius_Receiver.send_message("Hold")
+    Octavius_Receiver.send_message("Hold [duration]")
     Octavius_Receiver.send_message("Talk")
+    Octavius_Receiver.send_message("Suspend [duration]")
     Octavius_Receiver.send_message("Reboot")
     Octavius_Receiver.send_message("Update")
-    Octavius_Receiver.send_message("Download (filename")
+    Octavius_Receiver.send_message("Download [filename]")
     Octavius_Receiver.send_message("Print files")
-    Octavius_Receiver.send_message("Print (filename)")
-    Octavius_Receiver.send_message("Length (filename)")
-    Octavius_Receiver.send_message("Delete (filename)")
+    Octavius_Receiver.send_message("Print [filename]")
+    Octavius_Receiver.send_message("Length [filename]")
+    Octavius_Receiver.send_message("Delete [filename]")
     return
 
 def on():
@@ -111,7 +112,7 @@ def handle(msg, Octavius_Receiver):
             handle_error(E, Octavius_Receiver)
 
 
-    elif action == 'TALK':
+    elif action == 'TALK' or action =="HELP":
         talk(Octavius_Receiver)
 
     elif action == "HOLD":
