@@ -31,9 +31,9 @@ def receiver_loop(Octavius_Receiver):
                 print(ctime() + f" - Scheduling action {scheduled_action} at time {scheduled_time}")
                 Octavius_Receiver.send_message(f"Scheduling action {scheduled_action} at time {scheduled_time}")
 
-
         if scheduled_time == ctime().split(" ")[3][0:5]:
             print(ctime() + f" - Scheduled action {scheduled_action} at time {scheduled_time}")
+            Octavius_Receiver.send_message(f"Scheduled action {scheduled_action} at time {scheduled_time}")
             Command_Centre.handle(scheduled_action, Octavius_Receiver)
             scheduled_action = None
             scheduled_time = None
