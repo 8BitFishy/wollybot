@@ -1,10 +1,18 @@
 import json
+import sys
+
 import requests
 import urllib
 from time import time, ctime, sleep
+from platform import system
+import os
 
 filename = 'telegramID.txt'
-directory = __file__.strip("Telegram_Manager.py").strip(":")
+if system() == "Linux":
+    directory = __file__.strip("Telegram_Manager.py").strip(":")
+else:
+    directory = os.getcwd() + "\\"
+    #print(os.listdir())
 
 with open(f'{directory}{filename}') as f:
     IDS = f.read().splitlines()
@@ -17,7 +25,6 @@ class Message_Receiver:
     def __init__(self, text):
         self.text = text
         self.last_update_id = None
-
     
     def get_url(self, url):
         response = requests.get(url)
@@ -68,7 +75,7 @@ class Message_Receiver:
 
                     self.last_update_id = int(updates["result"][0]["update_id"])
 
-                    print(ctime() + " - Received Update")
+                    #print(ctime() + " - Received Update")
                     #print(updates)
 
                     date_time = int(str(time()).split(".")[0])
@@ -77,7 +84,7 @@ class Message_Receiver:
 
                     if abs(time_since_message) < 20:
                         self.text = updates["result"][0]["message"]["text"]
-                        print(ctime() + ' - Update Text - "' + self.text + '"')
+                        print(ctime() + ' - Received message - "' + self.text + '"')
 
                     else:
                         print(ctime() + " - Message timed out")
@@ -85,16 +92,16 @@ class Message_Receiver:
             return self.text
 
         except Exception as e:
-            print("Caught exception")
+            print(ctime() + " - Caught exception")
             try:
                 if str(updates["error_code"]) == str(409):
-                    print("Is 409 error")
-                    exit()
+                    print(ctime() + " - Is 409 error")
+                    raise sys.exit()
 
             except:
                 pass
             print(f"{ctime()} - Error reaching URL, cannot get updates")
-            print(e)
+            print(f"{ctime()} - Exception {e}")
             self.text = ''
             sleep(5)
             return self.text

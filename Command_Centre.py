@@ -6,7 +6,7 @@ try:
     led = LED(17)
 
 except:
-    print(ctime() + "No gpiozero module found")
+    print(ctime() + " - No gpiozero module found")
 
 directory = __file__.strip("Command_Centre.py").strip(":")
 protected_files = ['Command_Centre.py', 'Telegram_Manager.py', 'wollybot.py', 'telegramID.txt']
@@ -38,6 +38,7 @@ def talk(Octavius_Receiver):
     Octavius_Receiver.send_message("Hold [duration]")
     Octavius_Receiver.send_message("Talk")
     Octavius_Receiver.send_message("Suspend [duration]")
+    Octavius_Receiver.send_message("Schedule [time] [action] [duration]")
     Octavius_Receiver.send_message("Reboot")
     Octavius_Receiver.send_message("Update")
     Octavius_Receiver.send_message("Download [filename]")
@@ -51,7 +52,7 @@ def on():
     try:
         led.on()
     except:
-        print(ctime() + "No gpiozero module found")
+        print(ctime() + " - No gpiozero module found")
 
     return
 
@@ -59,16 +60,13 @@ def off():
     try:
         led.off()
     except:
-        print(ctime() + "No gpiozero module found")
+        print(ctime() + " - No gpiozero module found")
     return
 
 def hold(duration):
-    try:
-       on()
-       sleep(duration)
-       off()
-    except:
-        print(ctime() + "No gpiozero module found")
+    on()
+    sleep(duration)
+    off()
     return
 
 def reboot():
@@ -255,6 +253,25 @@ def handle(msg, Octavius_Receiver):
         except Exception as E:
             handle_error(E, Octavius_Receiver)
 
+    elif action == "SCHEDULE":
+        try:
+            scheduled_time = command[1]
+            scheduled_action = command[2]
+        except:
+            Octavius_Receiver.send_message("Command not formatted correctly or not recognised")
+            return
+
+        try:
+            duration = int(command[3])
+        except:
+            duration = None
+
+        if duration is not None:
+            text = f"{scheduled_action.upper()} {duration}"
+        else:
+            text = f"{scheduled_action.upper()}"
+
+        return(text, scheduled_time)
 
     else:
         print(ctime() + " - No action - Command not recognised")
